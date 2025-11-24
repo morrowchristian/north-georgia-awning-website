@@ -1,34 +1,19 @@
-# Node / build tools (only if you ever use npm locally)
+# Dependencies
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-package-lock.json
-yarn.lock
 
-# Editor / OS junk
+# Build output
+/dist/
+/build/
+
+# Astro
+.astro/
+
+# Environment & editor
+.env*
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
-*.sublime-project
-*.sublime-workspace
 
-# Local environment files
-.env
-.env.local
-
-# Build/output folders you might create
-/dist/
-/build/
-/out/
-/.temp/
-/.cache/
-
-# Netlify / Vercel deployment folders (if you ever use them later)
-.netlify
-.vercel
-
-# Temporary files
-*.tmp
-*.bak
-*~
+# Logs
+*.log
