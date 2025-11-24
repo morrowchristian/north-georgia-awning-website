@@ -1,12 +1,16 @@
-# North Georgia Awning LLC – Website
-Custom website built by ValleyForge Digital  
+# North Georgia Awning LLC - Website
+Custom website built by ValleyForge Digital
 Quote # Q-NGA-001 | November 2025
 
-## Tech Stack
-TODO
+## Development
+```bash
+cd src
+npm install
+npm run dev
+```
 
-## Quick Start
-Open src/index.html in browser during development
-
-## Client Assets
-All photos, logo, pricing matrix go in /assets/client-provided/
+## Structure
+- `/src` → all code (Astro components, pages, styles)
+- `/public` → static assets (images, favicon, fonts)
+- `/assets/client-provided` → raw files from Sarah
+- `/assets/final-exports` → optimized images you create
