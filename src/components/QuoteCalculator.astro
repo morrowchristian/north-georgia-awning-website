@@ -1,0 +1,136 @@
+---
+// src/components/QuoteCalculator.astro
+const { pricing } = Astro.props;
+
+let width = 10;
+let projection = 8;
+let type = "retractable" as keyof typeof pricing;
+let motor = false;
+let lights = false;
+let sensors = false;
+
+const calculatePrice = () => {
+  const area = width * projection;
+  const base = pricing[type];
+  let total = area * base.perSqFt;
+
+  if (motor) total += pricing.motor;
+  if (lights) total += pricing.lights;
+  if (sensors) total += pricing.sensors;
+
+  const low = Math.max(total * 0.92, base.min);
+  const high = Math.min(total * 1.15, base.max);
+
+  return {
+    low: Math.round(low),
+    high: Math.round(high),
+    area: Math.round(area)
+  };
+};
+---
+
+<div class="bg-white rounded-2xl shadow-xl p-8 md:p-12">
+  <form id="quote-form" class="space-y-10">
+    <!-- 1. Type -->
+    <div>
+      <label class="block text-lg font-semibold mb-4">1. Awning Type</label>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {Object.keys(pricing).map((t) => (
+          <label class="cursor-pointer">
+            <input
+              type="radio"
+              name="type"
+              value={t}
+              checked={type === t}
+              onchange={`type = "${t}"`}
+              class="sr-only peer"
+            />
+            <div class="bg-gray-100 peer-checked:bg-primary peer-checked:text-white rounded-lg p-6 text-center font-medium capitalize transition">
+              {t === "screens" ? "Screens" : t}
+            </div>
+          </label>
+        ))}
+      </div>
+    </div>
+
+    <!-- 2. Size -->
+    <div class="grid md:grid-cols-2 gap-8">
+      <div>
+        <label class="block text-lg font-semibold mb-3">2. Width (feet)</label>
+        <input
+          type="range"
+          min="6" max="30" step="1"
+          value={width}
+          oninput="width = this.value"
+          class="w-full h-3 bg-gray-200 rounded-lg cursor-pointer"
+        />
+        <div class="text-center mt-3 text-2xl font-bold text-primary">{width} ft</div>
+      </div>
+      <div>
+        <label class="block text-lg font-semibold mb-3">3. Projection (feet)</label>
+        <input
+          type="range"
+          min="6" max="16" step="1"
+          value={projection}
+          oninput="projection = this.value"
+          class="w-full h-3 bg-gray-200 rounded-lg cursor-pointer"
+        />
+        <div class="text-center mt-3 text-2xl font-bold text-primary">{projection} ft</div>
+      </div>
+    </div>
+
+    <!-- 4. Add-ons -->
+    <div>
+      <label class="block text-lg font-semibold mb-4">4. Optional Upgrades</label>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <label class="flex items-center space-x-3 cursor-pointer text-lg">
+          <input type="checkbox" checked={motor} onchange="motor = this.checked" class="w-6 h-6 text-accent rounded" />
+          <span>Motorized (+${pricing.motor})</span>
+        </label>
+        <label class="flex items-center space-x-3 cursor-pointer text-lg">
+          <input type="checkbox" checked={lights} onchange="lights = this.checked" class="w-6 h-6 text-accent rounded" />
+          <span>LED Lights (+${pricing.lights})</span>
+        </label>
+        <label class="flex items-center space-x-3 cursor-pointer text-lg">
+          <input type="checkbox" checked={sensors} onchange="sensors = this.checked" class="w-6 h-6 text-accent rounded" />
+          <span>Wind/Rain Sensors (+${pricing.sensors})</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div id="result" class="bg-gray-50 rounded-2xl p-10 text-center">
+      <p class="text-lg text-gray-600 mb-2">Estimated size: <span id="area">{calculatePrice().area}</span> sq ft</p>
+      <p class="text-5xl font-bold text-primary">
+        $<span id="low">{calculatePrice().low.toLocaleString()}</span> – $<span id="high">{calculatePrice().high.toLocaleString()}</span>
+      </p>
+      <p class="text-xl text-gray-600 mt-4">Installed price range</p>
+    </div>
+
+    <div class="text-center mt-12">
+      <button
+        type="button"
+        class="bg-accent hover:bg-orange-700 text-white font-bold text-2xl py-6 px-16 rounded-xl transition transform hover:scale-105"
+        onclick="alert('Quote request sent! We\'ll call you today.')"
+      >
+        Send My Quote Request
+      </button>
+      <p class="mt-6 text-gray-600">No obligation • Same-day response</p>
+    </div>
+  </form>
+</div>
+
+<script define:vars={{ calculatePrice }}>
+  const form = document.getElementById('quote-form');
+  const update = () => {
+    const r = calculatePrice();
+    const lowEl = document.getElementById('low');
+    const highEl = document.getElementById('high');
+    const areaEl = document.getElementById('area');
+    if (lowEl) lowEl.textContent = r.low.toLocaleString();
+    if (highEl) highEl.textContent = r.high.toLocaleString();
+    if (areaEl) areaEl.textContent = r.area.toString();
+  };
+  form?.addEventListener('input', update);
+  update(); // initial
+</script>

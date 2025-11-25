@@ -1,0 +1,38 @@
+---
+// src/pages/quote.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// ——— PLACEHOLDER - NEED PRICING INFO TO UPDATE ———
+const pricing = {
+  retractable: { perSqFt: 48, min: 1800, max: 6800 },
+  fixed:        { perSqFt: 38, min: 1200, max: 5200 },
+  pergola:      { perSqFt: 65, min: 3500, max: 12000 },
+  screens:      { perSqFt: 28, min: 800,  max: 3200 },
+  // Add-ons (flat fees)
+  motor: 950,
+  lights: 350,
+  sensors: 450
+};
+// ————————————————————————————————————————————————
+
+import QuoteCalculator from '../components/QuoteCalculator.astro';
+---
+<BaseLayout title="Free Quote" description="Instant awning price estimator – no obligation">
+  <section class="py-24 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <h1 class="text-5xl md:text-6xl font-bold text-primary mb-6">
+        Get Your Free Quote in 60 Seconds
+      </h1>
+      <p class="text-xl text-gray-600 mb-12">
+        Most quotes returned same day • No pressure • Family owned
+      </p>
+    </div>
+  </section>
+
+  <!-- Calculator component -->
+  <section class="py-16">
+    <div class="max-w-4xl mx-auto px-6">
+      <QuoteCalculator {pricing} />
+    </div>
+  </section>
+</BaseLayout>
